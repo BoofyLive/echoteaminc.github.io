@@ -415,7 +415,7 @@
             box-shadow: 0 8px 30px rgba(0, 212, 255, 0.3);
         }
 
-        /* ============ ПОСТЫ ============ */
+        /* ============ ПОСТЫ С ЭФФЕКТОМ НАЖАТИЯ ============ */
         .posts-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
@@ -437,6 +437,54 @@
             flex-direction: column;
             height: 100%;
             min-height: 300px;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Эффект нажатия */
+        .post-card:active {
+            transform: scale(0.96);
+            transition-duration: 0.05s;
+        }
+
+        /* Волна при клике */
+        .post-card .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(79, 195, 255, 0.3);
+            transform: scale(0);
+            animation: rippleAnim 0.8s ease-out forwards;
+            pointer-events: none;
+        }
+
+        @keyframes rippleAnim {
+            0% {
+                transform: scale(0);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* Свечение при наведении */
+        .post-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 20px;
+            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(79, 195, 255, 0.05), transparent 60%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .post-card:hover::after {
+            opacity: 1;
         }
 
         .post-card:hover {
@@ -833,6 +881,10 @@
             .visitor-counter .count {
                 font-size: 14px;
             }
+
+            .post-card:active {
+                transform: scale(0.97);
+            }
         }
 
         @media (min-width: 1400px) {
@@ -867,8 +919,8 @@
 
             <!-- ВКЛАДКИ -->
             <div class="tabs">
-                <button class="tab-btn active" data-tab="blog">📝 Блог</button>
-                <button class="tab-btn" data-tab="download">⬇️ Скачать</button>
+                <button class="tab-btn active" data-tab="blog">Блог</button>
+                <button class="tab-btn" data-tab="download">Скачать</button>
             </div>
 
             <!-- ВКЛАДКА: БЛОГ -->
@@ -889,7 +941,6 @@
                         Нажми на кнопку ниже, чтобы выбрать платформу для скачивания.
                     </p>
 
-                    <!-- КАРТИНКА FUNKYMOGUS -->
                     <img src="images/funkymogus.png" alt="FunkyMogus" class="funky-image" 
                          onerror="this.style.display='none'">
 
@@ -1027,8 +1078,45 @@
             if (subButtons.classList.contains('open')) {
                 this.textContent = 'Скрыть варианты';
             } else {
-                this.textContent = '🎵 FunkyMogus';
+                this.textContent = 'FunkyMogus';
             }
+        });
+
+        // ============ ЭФФЕКТ НАЖАТИЯ ПО КАРТОЧКЕ ============
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.post-card');
+
+            cards.forEach(card => {
+                // Эффект нажатия с волной
+                card.addEventListener('click', function(e) {
+                    // Создаём волну
+                    const rect = this.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    const ripple = document.createElement('span');
+                    ripple.className = 'ripple';
+                    ripple.style.left = x + 'px';
+                    ripple.style.top = y + 'px';
+                    ripple.style.width = '20px';
+                    ripple.style.height = '20px';
+                    this.appendChild(ripple);
+
+                    // Удаляем волну после анимации
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 800);
+                });
+
+                // Эффект свечения при наведении
+                card.addEventListener('mousemove', function(e) {
+                    const rect = this.getBoundingClientRect();
+                    const x = ((e.clientX - rect.left) / rect.width) * 100;
+                    const y = ((e.clientY - rect.top) / rect.height) * 100;
+                    this.style.setProperty('--x', x + '%');
+                    this.style.setProperty('--y', y + '%');
+                });
+            });
         });
 
         // ============ ПОСТЫ ============
@@ -1102,6 +1190,8 @@
                 const data = await response.json();
                 posts = data;
                 renderPosts();
+                // Переинициализируем эффекты после рендера
+                setTimeout(initCardEffects, 100);
                 return true;
             } catch (error) {
                 posts = [];
@@ -1151,6 +1241,51 @@
             }).join('');
         }
 
+        // ============ ЭФФЕКТЫ КАРТОЧЕК ============
+        function initCardEffects() {
+            const cards = document.querySelectorAll('.post-card');
+
+            cards.forEach(card => {
+                // Удаляем старые обработчики, чтобы не дублировать
+                card.removeEventListener('click', card._rippleHandler);
+                card.removeEventListener('mousemove', card._moveHandler);
+
+                // Волна при клике
+                const rippleHandler = function(e) {
+                    const rect = this.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    const ripple = document.createElement('span');
+                    ripple.className = 'ripple';
+                    ripple.style.left = x + 'px';
+                    ripple.style.top = y + 'px';
+                    ripple.style.width = '20px';
+                    ripple.style.height = '20px';
+                    this.appendChild(ripple);
+
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 800);
+                };
+
+                card.addEventListener('click', rippleHandler);
+                card._rippleHandler = rippleHandler;
+
+                // Свечение при наведении
+                const moveHandler = function(e) {
+                    const rect = this.getBoundingClientRect();
+                    const x = ((e.clientX - rect.left) / rect.width) * 100;
+                    const y = ((e.clientY - rect.top) / rect.height) * 100;
+                    this.style.setProperty('--x', x + '%');
+                    this.style.setProperty('--y', y + '%');
+                };
+
+                card.addEventListener('mousemove', moveHandler);
+                card._moveHandler = moveHandler;
+            });
+        }
+
         // ============ МОДАЛЬНОЕ ОКНО ============
         function openPost(id) {
             const post = posts.find(p => p.id === id);
@@ -1190,6 +1325,7 @@
         // ============ ЗАПУСК ============
         async function init() {
             await loadPosts();
+            initCardEffects();
             setInterval(async () => {
                 await loadPosts();
             }, 30000);
