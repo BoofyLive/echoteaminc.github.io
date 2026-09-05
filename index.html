@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Космос Among Us</title>
+    <title>Реалистичный космос</title>
     <style>
-        /* Сброс отступов и полное перекрытие экрана */
         * {
             margin: 0;
             padding: 0;
@@ -14,173 +13,404 @@
 
         body {
             min-height: 100vh;
-            /* Градиент синий → фиолетовый (вертикальный) */
-            background: linear-gradient(180deg, #0a0a5c 0%, #4a1a6b 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Segoe UI', Roboto, sans-serif;
-            overflow: hidden; /* убираем скролл, если звёзды выходят за край */
+            background: #000000;
+            overflow: hidden;
             position: relative;
         }
 
-        /* Контейнер для звёздного слоя — поверх градиента */
-        .stars-container {
+        /* Основной космический слой */
+        .space {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none;   /* чтобы звёзды не мешали кликам по будущему контенту */
-            z-index: 1;
+            background: radial-gradient(ellipse at 30% 40%, #0a0015 0%, #000000 70%);
+            z-index: 0;
         }
 
-        /* Стиль каждой звезды */
+        /* Слой со звёздами */
+        .stars-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Стиль звёзд */
         .star {
             position: absolute;
-            background: white;
             border-radius: 50%;
-            box-shadow: 0 0 6px 2px rgba(255, 255, 255, 0.6);
-            animation: float-star linear infinite;
-            opacity: 0.8;
+            background: white;
+            animation: twinkle var(--duration) ease-in-out infinite alternate;
         }
 
-        /* Анимация движения — как в Among Us (плавное смещение вверх-вниз с лёгким дрейфом) */
-        @keyframes float-star {
+        /* Мерцание звёзд */
+        @keyframes twinkle {
             0% {
-                transform: translate(0, 0) scale(1);
-                opacity: 0.9;
-            }
-            25% {
-                transform: translate(8px, -12px) scale(1.2);
-                opacity: 1;
-            }
-            50% {
-                transform: translate(-6px, -20px) scale(0.9);
-                opacity: 0.7;
-            }
-            75% {
-                transform: translate(10px, -8px) scale(1.1);
-                opacity: 1;
+                opacity: var(--min-opacity);
+                transform: scale(0.8);
             }
             100% {
-                transform: translate(-4px, 0) scale(1);
-                opacity: 0.9;
+                opacity: var(--max-opacity);
+                transform: scale(1.2);
             }
         }
 
-        /* Дополнительный слой с текстом (или будущим контентом) — поверх звёзд */
-        .content {
-            position: relative;
+        /* Крупные звёзды с крестообразным свечением */
+        .star-bright {
+            position: absolute;
+            border-radius: 50%;
+            background: white;
+            animation: twinkle-bright var(--duration) ease-in-out infinite alternate;
+        }
+
+        .star-bright::before,
+        .star-bright::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+        }
+
+        .star-bright::before {
+            width: 300%;
+            height: 4px;
+            filter: blur(2px);
+        }
+
+        .star-bright::after {
+            width: 4px;
+            height: 300%;
+            filter: blur(2px);
+        }
+
+        @keyframes twinkle-bright {
+            0% {
+                opacity: 0.6;
+                transform: scale(0.9);
+                filter: brightness(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1.1);
+                filter: brightness(1.3);
+            }
+        }
+
+        /* Туманности (небулы) */
+        .nebula {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            z-index: 0;
+            pointer-events: none;
+            animation: nebula-float 30s ease-in-out infinite alternate;
+        }
+
+        @keyframes nebula-float {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                transform: translate(30px, -20px) scale(1.1);
+            }
+        }
+
+        /* Падающие звёзды (метеоры) */
+        .shooting-star {
+            position: fixed;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
             z-index: 2;
-            color: white;
-            text-align: center;
-            padding: 2rem;
-            text-shadow: 0 0 20px rgba(100, 70, 255, 0.7);
-            background: rgba(0, 0, 0, 0.25);
-            backdrop-filter: blur(2px);
-            border-radius: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
-            max-width: 800px;
-            margin: 20px;
-            pointer-events: auto; /* чтобы можно было взаимодействовать с текстом */
+            pointer-events: none;
+            animation: shoot var(--duration) linear infinite;
+            opacity: 0;
         }
 
-        h1 {
-            font-size: 3.2rem;
-            font-weight: 700;
-            letter-spacing: 4px;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, #b0d0ff, #d9b0ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        .shooting-star::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100px;
+            height: 1px;
+            background: linear-gradient(to left, rgba(255,255,255,0.8), transparent);
+            transform: rotate(0deg) translateX(-50%);
+            transform-origin: right center;
         }
 
-        p {
-            font-size: 1.4rem;
-            opacity: 0.9;
-            margin-top: 10px;
-            letter-spacing: 1px;
+        .shooting-star::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 60px;
+            height: 1px;
+            background: linear-gradient(to left, rgba(200,180,255,0.4), transparent);
+            transform: rotate(0deg) translateX(-50%) translateY(2px);
+            transform-origin: right center;
         }
 
-        /* Адаптив */
-        @media (max-width: 600px) {
-            h1 { font-size: 2.2rem; }
-            p { font-size: 1.1rem; }
+        @keyframes shoot {
+            0% {
+                opacity: 0;
+                transform: translate(0, 0) rotate(0deg);
+            }
+            5% {
+                opacity: 1;
+            }
+            15% {
+                opacity: 0;
+                transform: translate(var(--travel-x), var(--travel-y)) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--travel-x), var(--travel-y)) rotate(0deg);
+            }
+        }
+
+        /* Млечный путь (полоса) */
+        .milky-way {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            background: radial-gradient(ellipse at 60% 50%, rgba(100,80,180,0.08) 0%, transparent 50%),
+                        radial-gradient(ellipse at 40% 70%, rgba(80,60,160,0.06) 0%, transparent 40%),
+                        radial-gradient(ellipse at 70% 30%, rgba(120,100,200,0.05) 0%, transparent 35%);
+            filter: blur(30px);
+        }
+
+        /* Мелкие звёзды-пыль */
+        .dust {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            animation: dust-float var(--duration) linear infinite;
+        }
+
+        @keyframes dust-float {
+            0% {
+                transform: translate(0, 0);
+                opacity: 0.1;
+            }
+            50% {
+                opacity: 0.4;
+            }
+            100% {
+                transform: translate(var(--drift-x), var(--drift-y));
+                opacity: 0.1;
+            }
+        }
+
+        /* Гало вокруг ярких звёзд */
+        .halo {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+            pointer-events: none;
+            animation: halo-pulse 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes halo-pulse {
+            0% {
+                opacity: 0.3;
+                transform: scale(0.8);
+            }
+            100% {
+                opacity: 0.8;
+                transform: scale(1.2);
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- Слой со звёздами (генерируется через JS) -->
-    <div class="stars-container" id="starsContainer"></div>
+    <!-- Чёрный фон с лёгким градиентом -->
+    <div class="space"></div>
 
-    <!-- Основной контент (для примера) -->
-    <div class="content">
-        <h1>✦ Следи за звёздами ✦</h1>
-        <p>Движение как в Among Us<br>Градиент синий → фиолетовый</p>
-    </div>
+    <!-- Млечный путь -->
+    <div class="milky-way"></div>
+
+    <!-- Туманности -->
+    <div class="nebula" style="width: 500px; height: 500px; background: radial-gradient(circle, #4a0080, #1a0040); top: 10%; left: 5%;"></div>
+    <div class="nebula" style="width: 600px; height: 400px; background: radial-gradient(circle, #003366, #00001a); bottom: 15%; right: 8%; animation-delay: -10s;"></div>
+    <div class="nebula" style="width: 350px; height: 350px; background: radial-gradient(circle, #660044, #330022); top: 50%; left: 60%; animation-delay: -20s;"></div>
+    <div class="nebula" style="width: 450px; height: 450px; background: radial-gradient(circle, #1a0044, #000022); bottom: 30%; left: 20%; animation-delay: -5s;"></div>
+
+    <!-- Слой звёзд -->
+    <div class="stars-layer" id="starsLayer"></div>
 
     <script>
         (function() {
-            const container = document.getElementById('starsContainer');
-            const starCount = 120; // количество звёзд
+            const layer = document.getElementById('starsLayer');
+            const starCount = 800;
+            const brightStarCount = 30;
+            const dustCount = 150;
+            const shootingStarCount = 5;
 
-            // Размеры окна
-            const winWidth = window.innerWidth;
-            const winHeight = window.innerHeight;
+            const colors = [
+                '#ffffff', '#aaccff', '#ffddaa', '#ffaaff', 
+                '#88ddff', '#ffcc88', '#cc88ff', '#aaffdd'
+            ];
 
-            // Функция генерации случайного числа в диапазоне
-            const rand = (min, max) => Math.random() * (max - min) + min;
-
-            // Создаём звёзды
+            // Создание обычных звёзд
             for (let i = 0; i < starCount; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
-
-                // Случайный размер (от 2 до 6 пикселей)
-                const size = rand(2, 6);
+                
+                const size = Math.random() * 2.5 + 0.5;
                 star.style.width = size + 'px';
                 star.style.height = size + 'px';
-
-                // Случайная позиция по всему экрану
-                star.style.left = rand(0, 100) + '%';
-                star.style.top = rand(0, 100) + '%';
-
-                // Индивидуальная скорость анимации (чтобы двигались не синхронно)
-                // от 4 до 12 секунд на один цикл
-                const duration = rand(5, 14);
-                star.style.animationDuration = duration + 's';
-
-                // Небольшой разброс задержки старта
-                star.style.animationDelay = rand(0, 5) + 's';
-
-                // Случайная яркость (немного варьируем opacity)
-                star.style.opacity = rand(0.5, 1);
-
-                // Добавляем лёгкое свечение разного цвета (от белого до голубоватого/фиолетового)
-                const hue = rand(200, 290); // 200-240 синий, 260-290 фиолетовый
-                star.style.boxShadow = `0 0 ${rand(4, 12)}px ${rand(1, 4)}px hsla(${hue}, 80%, 70%, 0.6)`;
-                star.style.background = `hsl(${hue}, 90%, 85%)`;
-
-                container.appendChild(star);
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                star.style.background = color;
+                
+                star.style.setProperty('--duration', (Math.random() * 4 + 2) + 's');
+                star.style.setProperty('--min-opacity', Math.random() * 0.3 + 0.1);
+                star.style.setProperty('--max-opacity', Math.random() * 0.7 + 0.3);
+                
+                star.style.animationDelay = Math.random() * 5 + 's';
+                
+                // Добавляем свечение для некоторых звёзд
+                if (Math.random() > 0.7) {
+                    star.style.boxShadow = `0 0 ${Math.random() * 6 + 2}px ${color}`;
+                }
+                
+                layer.appendChild(star);
             }
 
-            // Опционально: обновлять позиции при изменении размера окна?
-            // Для простоты оставляем статичную раскладку, но звёзды будут двигаться в пределах своих % координат.
-            // Можно пересоздавать при ресайзе, но это не обязательно.
+            // Яркие звёзды с крестом
+            for (let i = 0; i < brightStarCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star-bright';
+                
+                const size = Math.random() * 4 + 3;
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                
+                const colors_bright = ['#ffffff', '#ccddff', '#ffeedd', '#ffddff'];
+                const color = colors_bright[Math.floor(Math.random() * colors_bright.length)];
+                star.style.background = color;
+                star.style.boxShadow = `0 0 ${size * 3}px ${color}`;
+                
+                star.style.setProperty('--duration', (Math.random() * 3 + 3) + 's');
+                star.style.animationDelay = Math.random() * 4 + 's';
+                
+                layer.appendChild(star);
 
-            // Если нужно пересоздавать при ресайзе (чтобы звёзды не вылезали за пределы) — раскомментируйте:
-            /*
-            window.addEventListener('resize', () => {
-                // Просто очищаем и заново генерируем
-                container.innerHTML = '';
-                // Повторяем цикл создания (код выше)
-                // Для краткости здесь не дублирую, но можно вынести в функцию createStars()
-            });
-            */
+                // Гало вокруг яркой звезды
+                if (Math.random() > 0.5) {
+                    const halo = document.createElement('div');
+                    halo.className = 'halo';
+                    halo.style.width = (size * 8) + 'px';
+                    halo.style.height = (size * 8) + 'px';
+                    halo.style.left = parseFloat(star.style.left) - (size * 3.5) + '%';
+                    halo.style.top = parseFloat(star.style.top) - (size * 3.5) + '%';
+                    halo.style.animationDelay = (Math.random() * 3) + 's';
+                    layer.appendChild(halo);
+                }
+            }
+
+            // Пылевые звёзды (мелкие, движущиеся)
+            for (let i = 0; i < dustCount; i++) {
+                const dust = document.createElement('div');
+                dust.className = 'dust';
+                
+                const size = Math.random() * 1.5 + 0.3;
+                dust.style.width = size + 'px';
+                dust.style.height = size + 'px';
+                dust.style.left = Math.random() * 100 + '%';
+                dust.style.top = Math.random() * 100 + '%';
+                dust.style.background = `rgba(255,255,255,${Math.random() * 0.3 + 0.1})`;
+                
+                dust.style.setProperty('--duration', (Math.random() * 20 + 15) + 's');
+                dust.style.setProperty('--drift-x', (Math.random() * 100 - 50) + 'px');
+                dust.style.setProperty('--drift-y', (Math.random() * 100 - 50) + 'px');
+                dust.style.animationDelay = Math.random() * 20 + 's';
+                
+                layer.appendChild(dust);
+            }
+
+            // Падающие звёзды
+            for (let i = 0; i < shootingStarCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'shooting-star';
+                
+                const startX = Math.random() * 80 + 10;
+                const startY = Math.random() * 40 + 5;
+                const travelX = (Math.random() * 300 + 200) * (Math.random() > 0.5 ? 1 : -1);
+                const travelY = (Math.random() * 300 + 200);
+                
+                star.style.left = startX + '%';
+                star.style.top = startY + '%';
+                star.style.setProperty('--travel-x', travelX + 'px');
+                star.style.setProperty('--travel-y', travelY + 'px');
+                star.style.setProperty('--duration', (Math.random() * 4 + 3) + 's');
+                star.style.animationDelay = (Math.random() * 15 + 5) + 's';
+                
+                layer.appendChild(star);
+            }
+
+            // Дополнительные мерцающие звёзды разного размера
+            for (let i = 0; i < 200; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                
+                const size = Math.random() * 1.5 + 0.3;
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                
+                const hue = 200 + Math.random() * 60;
+                star.style.background = `hsl(${hue}, 80%, 85%)`;
+                star.style.boxShadow = `0 0 ${Math.random() * 4 + 1}px hsl(${hue}, 80%, 70%)`;
+                
+                star.style.setProperty('--duration', (Math.random() * 6 + 3) + 's');
+                star.style.setProperty('--min-opacity', Math.random() * 0.2 + 0.05);
+                star.style.setProperty('--max-opacity', Math.random() * 0.5 + 0.3);
+                star.style.animationDelay = Math.random() * 8 + 's';
+                
+                layer.appendChild(star);
+            }
+
+            // Дополнительный слой очень мелких звёзд для глубины
+            for (let i = 0; i < 500; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                
+                const size = Math.random() * 0.8 + 0.2;
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.background = 'rgba(255,255,255,0.3)';
+                star.style.setProperty('--duration', (Math.random() * 8 + 4) + 's');
+                star.style.setProperty('--min-opacity', '0.05');
+                star.style.setProperty('--max-opacity', '0.2');
+                star.style.animationDelay = Math.random() * 10 + 's';
+                
+                layer.appendChild(star);
+            }
+
         })();
     </script>
 
