@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EchoTeam.INC</title>
+    <title>EchoBlog.INC</title>
     <style>
         /* ============ ОБЩИЕ СТИЛИ ============ */
         * {
@@ -188,6 +188,215 @@
             border-radius: 20px;
             font-size: 12px;
             color: #ffab40;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .header-right .badge:hover {
+            background: rgba(255, 145, 0, 0.25);
+            transform: scale(1.05);
+        }
+
+        .header-right .badge.active {
+            background: rgba(79, 195, 255, 0.2);
+            border-color: #4fc3ff;
+            color: #4fc3ff;
+        }
+
+        /* ============ СЧЁТЧИК ПОСЕТИТЕЛЕЙ ============ */
+        .visitor-counter {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            background: rgba(0, 200, 80, 0.1);
+            border: 1px solid rgba(0, 200, 80, 0.2);
+            border-radius: 20px;
+            font-size: 13px;
+            color: #69f0ae;
+        }
+
+        .visitor-counter .count {
+            font-weight: 700;
+            font-size: 16px;
+            color: #fff;
+        }
+
+        /* ============ ВКЛАДКИ ============ */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 12px 28px;
+            background: rgba(0, 20, 60, 0.4);
+            border: 1px solid rgba(100, 200, 255, 0.1);
+            border-radius: 14px;
+            color: #90caf9;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .tab-btn:hover {
+            background: rgba(0, 40, 100, 0.4);
+            border-color: rgba(100, 200, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .tab-btn.active {
+            background: rgba(0, 100, 255, 0.2);
+            border-color: #4fc3ff;
+            color: #4fc3ff;
+            box-shadow: 0 0 30px rgba(79, 195, 255, 0.1);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ============ СТРАНИЦА DOWNLOAD ============ */
+        .download-page {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .download-page h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ff6f00, #ff9100);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .download-page p {
+            color: #b0bec5;
+            font-size: 18px;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .funky-btn {
+            display: inline-block;
+            padding: 20px 60px;
+            background: linear-gradient(135deg, #ff6f00, #ff9100);
+            border: none;
+            border-radius: 20px;
+            font-size: 28px;
+            font-weight: 800;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 30px rgba(255, 145, 0, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .funky-btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1), transparent 70%);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .funky-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 40px rgba(255, 145, 0, 0.5);
+        }
+
+        .funky-btn:active {
+            transform: scale(0.95);
+        }
+
+        .sub-buttons {
+            display: none;
+            margin-top: 40px;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .sub-buttons.open {
+            display: flex;
+        }
+
+        .sub-btn {
+            display: inline-block;
+            padding: 16px 40px;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .sub-btn:hover {
+            transform: translateY(-5px);
+        }
+
+        .sub-btn.gamebanana {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-color: #ff6b35;
+            color: #ff6b35;
+        }
+
+        .sub-btn.gamebanana:hover {
+            background: linear-gradient(135deg, #ff6b35, #e85d2c);
+            color: #fff;
+            border-color: #ff6b35;
+            box-shadow: 0 8px 30px rgba(255, 107, 53, 0.3);
+        }
+
+        .sub-btn.gamejolt {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-color: #00d4ff;
+            color: #00d4ff;
+        }
+
+        .sub-btn.gamejolt:hover {
+            background: linear-gradient(135deg, #00d4ff, #0099cc);
+            color: #fff;
+            border-color: #00d4ff;
+            box-shadow: 0 8px 30px rgba(0, 212, 255, 0.3);
         }
 
         /* ============ ПОСТЫ ============ */
@@ -196,24 +405,6 @@
             grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
             gap: 30px;
             margin-top: 10px;
-        }
-
-        @media (min-width: 1600px) {
-            .posts-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-
-        @media (max-width: 1100px) {
-            .posts-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 700px) {
-            .posts-grid {
-                grid-template-columns: 1fr;
-            }
         }
 
         .post-card {
@@ -347,9 +538,25 @@
             grid-column: 1 / -1;
         }
 
-        .empty-posts p {
-            font-size: 18px;
-            opacity: 0.7;
+        .empty-posts .empty-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .empty-posts .empty-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .empty-posts .empty-desc {
+            font-size: 16px;
+            opacity: 0.6;
+            max-width: 400px;
+            margin: 0 auto;
+            line-height: 1.6;
         }
 
         .loading {
@@ -380,17 +587,6 @@
 
         .modal-overlay.active {
             display: flex;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
         }
 
         .modal-content {
@@ -541,6 +737,7 @@
 
             .header-right {
                 justify-content: center;
+                flex-wrap: wrap;
             }
 
             .posts-grid {
@@ -580,6 +777,42 @@
             .modal-content .post-full-content .modal-image-wrapper img {
                 max-height: 300px;
             }
+
+            .download-page h2 {
+                font-size: 28px;
+            }
+
+            .funky-btn {
+                padding: 16px 40px;
+                font-size: 22px;
+            }
+
+            .sub-btn {
+                padding: 14px 30px;
+                font-size: 16px;
+                width: 100%;
+            }
+
+            .sub-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .tab-btn {
+                padding: 10px 20px;
+                font-size: 14px;
+                flex: 1;
+                text-align: center;
+            }
+
+            .visitor-counter {
+                font-size: 12px;
+                padding: 4px 12px;
+            }
+
+            .visitor-counter .count {
+                font-size: 14px;
+            }
         }
 
         @media (min-width: 1400px) {
@@ -601,16 +834,51 @@
         <div class="content">
             <!-- ШАПКА -->
             <header class="header">
-                <h1>🚀 Космический блог</h1>
+                <h1>EchoBlog.INC</h1>
                 <div class="header-right">
-                    <span class="badge">✨ Читайте и вдохновляйтесь</span>
+                    <div class="visitor-counter">
+                        <span>👥 Онлайн:</span>
+                        <span class="count" id="visitorCount">1</span>
+                    </div>
+                    <span class="badge" id="blogTabBtn">Блог</span>
+                    <span class="badge" id="downloadTabBtn">Download</span>
                 </div>
             </header>
 
-            <!-- ПОСТЫ -->
-            <div id="postsContainer">
-                <div class="posts-grid" id="postsGrid">
-                    <div class="loading">⏳ Загрузка...</div>
+            <!-- ВКЛАДКИ -->
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="blog">Блог</button>
+                <button class="tab-btn" data-tab="download">Download</button>
+            </div>
+
+            <!-- ВКЛАДКА: БЛОГ -->
+            <div class="tab-content active" id="tab-blog">
+                <div id="postsContainer">
+                    <div class="posts-grid" id="postsGrid">
+                        <div class="loading">Загрузка...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ВКЛАДКА: DOWNLOAD -->
+            <div class="tab-content" id="tab-download">
+                <div class="download-page">
+                    <h2>FunkyMogus</h2>
+                    <p>
+                        Скачай мод FunkyMogus для Friday Night Funkin!<br>
+                        Нажми на кнопку ниже, чтобы выбрать платформу для скачивания.
+                    </p>
+
+                    <button class="funky-btn" id="funkyBtn">FunkyMogus</button>
+
+                    <div class="sub-buttons" id="subButtons">
+                        <a href="https://gamebanana.com/mods/684716" target="_blank" class="sub-btn gamebanana">
+                            Gamebanana
+                        </a>
+                        <a href="https://gamejolt.com/games/funkymogus/960415" target="_blank" class="sub-btn gamejolt">
+                            Gamejolt
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -688,33 +956,75 @@
             stars.forEach(star => moveStar(star));
         })();
 
+        // ============ СЧЁТЧИК ПОСЕТИТЕЛЕЙ ============
+        (function() {
+            let visitorId = localStorage.getItem('visitorId');
+            if (!visitorId) {
+                visitorId = 'visitor_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('visitorId', visitorId);
+            }
+
+            let count = parseInt(localStorage.getItem('visitorCount') || '0');
+            const today = new Date().toDateString();
+            const lastVisit = localStorage.getItem('lastVisitDate');
+
+            if (lastVisit !== today) {
+                count++;
+                localStorage.setItem('visitorCount', count.toString());
+                localStorage.setItem('lastVisitDate', today);
+            }
+
+            document.getElementById('visitorCount').textContent = count;
+
+            setInterval(() => {
+                const currentCount = parseInt(localStorage.getItem('visitorCount') || '0');
+                document.getElementById('visitorCount').textContent = currentCount;
+            }, 10000);
+        })();
+
+        // ============ ВКЛАДКИ ============
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+
+                const tabId = this.dataset.tab;
+                document.getElementById('tab-' + tabId).classList.add('active');
+            });
+        });
+
+        // ============ КНОПКА FUNKYMOGUS ============
+        document.getElementById('funkyBtn').addEventListener('click', function() {
+            const subButtons = document.getElementById('subButtons');
+            subButtons.classList.toggle('open');
+
+            if (subButtons.classList.contains('open')) {
+                this.textContent = 'Скрыть варианты';
+            } else {
+                this.textContent = 'FunkyMogus';
+            }
+        });
+
         // ============ ПОСТЫ ============
         let posts = [];
 
-        // Функция для обработки текста с тегами !image:(имя_фото)
         function parseContent(content, isModal = false) {
             if (!content) return 'Нет содержимого';
 
-            // Разбиваем текст на части по тегу !image:(...)
             const parts = content.split(/!image:\(([^)]+)\)/);
-
             let result = '';
-            let hasImage = false;
 
             for (let i = 0; i < parts.length; i++) {
-                // Чётные индексы - текст, нечётные - имя картинки
                 if (i % 2 === 0) {
-                    // Текстовая часть
                     const text = parts[i].trim();
                     if (text) {
                         result += `<span>${text}</span>`;
                     }
                 } else {
-                    // Имя картинки
                     const imageName = parts[i].trim();
                     if (imageName) {
-                        hasImage = true;
-                        // Проверяем расширение
                         const ext = imageName.split('.').pop().toLowerCase();
                         const validExts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'ico'];
                         const imagePath = validExts.includes(ext) ?
@@ -722,7 +1032,6 @@
                             `images/${imageName}.jpg`;
 
                         if (isModal) {
-                            // Для модального окна - большая картинка
                             result += `
                                 <div class="modal-image-wrapper">
                                     <img src="${imagePath}" alt="${imageName}" 
@@ -730,7 +1039,6 @@
                                 </div>
                             `;
                         } else {
-                            // Для превью - маленькая картинка
                             result += `
                                 <div style="margin: 10px 0;">
                                     <img src="${imagePath}" alt="${imageName}" 
@@ -746,13 +1054,11 @@
             return result;
         }
 
-        // Функция для получения текста без картинок (для превью)
         function getPlainText(content) {
             if (!content) return '';
             return content.replace(/!image:\([^)]+\)/g, '').trim();
         }
 
-        // Функция для получения первой картинки (для превью в карточке)
         function getFirstImage(content) {
             if (!content) return null;
             const match = content.match(/!image:\(([^)]+)\)/);
@@ -767,36 +1073,16 @@
 
         async function loadPosts() {
             try {
-                const response = await fetch('/posts.json?' + Date.now());
+                // GitHub Pages: путь к файлу относительно корня репозитория
+                const response = await fetch('./posts.json?' + Date.now());
                 if (!response.ok) throw new Error('Файл не найден');
                 const data = await response.json();
                 posts = data;
                 renderPosts();
                 return true;
             } catch (error) {
-                // ДЕМО-ПОСТЫ
-                posts = [{
-                    id: Date.now() - 100000,
-                    title: '🚀 Добро пожаловать в космический блог!',
-                    content: 'Этот блог создан для вдохновения.\n\n!image:(welcome)\n\nЗдесь мы делимся мыслями, идеями и красивыми моментами. Каждый пост — это маленькая история. Читайте, вдохновляйтесь и наслаждайтесь!',
-                    author: 'Администратор',
-                    date: new Date(Date.now() - 100000).toLocaleString('ru-RU'),
-                    isDev: true
-                }, {
-                    id: Date.now() - 50000,
-                    title: '🌌 Красота космоса',
-                    content: 'Космос всегда манил человечество своей бесконечностью и загадочностью.\n\n!image:(cosmos)\n\nЗвёзды, планеты, галактики — всё это часть нашей огромной вселенной. Каждый раз, глядя на ночное небо, мы чувствуем себя частью чего-то большего.',
-                    author: 'Администратор',
-                    date: new Date(Date.now() - 50000).toLocaleString('ru-RU'),
-                    isDev: true
-                }, {
-                    id: Date.now() - 30000,
-                    title: '🌟 Звёздное небо над городом',
-                    content: 'Ночью, когда город затихает, можно увидеть невероятную красоту.\n\n!image:(stars-city)\n\nМиллиарды звёзд сияют над нами. Это напоминает нам о том, как малы мы в этой вселенной.',
-                    author: 'Администратор',
-                    date: new Date(Date.now() - 30000).toLocaleString('ru-RU'),
-                    isDev: true
-                }];
+                // ЕСЛИ НЕТ ПОСТОВ — ПОКАЗЫВАЕМ СООБЩЕНИЕ
+                posts = [];
                 renderPosts();
                 return false;
             }
@@ -809,7 +1095,9 @@
             if (!posts || posts.length === 0) {
                 grid.innerHTML = `
                     <div class="empty-posts">
-                        <p>📭 Пока нет постов</p>
+                        <div class="empty-icon">📭</div>
+                        <div class="empty-title">Извините, но постов пока нет</div>
+                        <div class="empty-desc">Скоро здесь появятся новые записи. Загляните позже!</div>
                     </div>
                 `;
                 return;
@@ -835,7 +1123,7 @@
                         `}
                         <h3>${post.title || 'Без заголовка'}</h3>
                         <div class="post-content-preview">${previewText || 'Нет содержимого'}</div>
-                        <div class="read-more">📖 Читать полностью →</div>
+                        <div class="read-more">Читать полностью →</div>
                     </div>
                 `;
             }).join('');
@@ -851,7 +1139,6 @@
             document.getElementById('modalDate').textContent = post.date || 'Дата не указана';
             document.getElementById('modalTitle').textContent = post.title || 'Без заголовка';
 
-            // Обрабатываем контент с картинками (для модалки)
             const parsedContent = parseContent(post.content || 'Нет содержимого', true);
             document.getElementById('modalContent').innerHTML = parsedContent;
 
@@ -864,14 +1151,12 @@
             document.body.style.overflow = '';
         }
 
-        // Закрытие по клику вне контента
         document.getElementById('postModal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeModal();
             }
         });
 
-        // Закрытие по ESC
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 closeModal();
@@ -883,8 +1168,6 @@
         // ============ ЗАПУСК ============
         async function init() {
             await loadPosts();
-
-            // Автообновление каждые 30 секунд
             setInterval(async () => {
                 await loadPosts();
             }, 30000);
@@ -892,9 +1175,9 @@
 
         init();
 
-        console.log('🚀 Космический блог запущен!');
-        console.log('📝 Используйте тег !image:(имя_фото) для вставки картинок');
-        console.log('📁 Картинки должны лежать в папке images/');
+        console.log('EchoBlog.INC запущен!');
+        console.log('Используйте тег !image:(имя_фото) для вставки картинок');
+        console.log('Картинки должны лежать в папке images/');
     </script>
 </body>
 </html>
