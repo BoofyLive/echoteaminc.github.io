@@ -3,94 +3,659 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Космическая регистрация</title>
-    <link rel="stylesheet" href="style.css" />
+    <title>Космический блог</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #050510;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* Космический фон */
+        .space-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at 50% 50%, #0a0a2a 0%, #050510 60%, #000000 100%);
+            z-index: 0;
+        }
+
+        .stars-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            border-radius: 50%;
+            background: white;
+            animation: twinkle var(--duration) ease-in-out infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: var(--min-opacity); transform: scale(0.8); }
+            100% { opacity: var(--max-opacity); transform: scale(1.2); }
+        }
+
+        .star-bright {
+            position: absolute;
+            border-radius: 50%;
+            background: white;
+            animation: twinkle-bright var(--duration) ease-in-out infinite alternate;
+        }
+
+        .star-bright::before,
+        .star-bright::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+        }
+
+        .star-bright::before {
+            width: 300%;
+            height: 2px;
+            filter: blur(2px);
+        }
+
+        .star-bright::after {
+            width: 2px;
+            height: 300%;
+            filter: blur(2px);
+        }
+
+        @keyframes twinkle-bright {
+            0% { opacity: 0.5; transform: scale(0.9); filter: brightness(0.8); }
+            100% { opacity: 1; transform: scale(1.1); filter: brightness(1.3); }
+        }
+
+        .nebula {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.15;
+            z-index: 0;
+            pointer-events: none;
+            animation: nebula-float 40s ease-in-out infinite alternate;
+        }
+
+        @keyframes nebula-float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(40px, -30px) scale(1.1); }
+        }
+
+        /* Контент */
+        .content {
+            position: relative;
+            z-index: 2;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            min-height: 100vh;
+        }
+
+        /* Шапка */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0 40px;
+            border-bottom: 1px solid rgba(100, 130, 255, 0.1);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #6a8cff, #4a5cff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 2px;
+        }
+
+        .logo span {
+            font-weight: 300;
+            background: none;
+            -webkit-text-fill-color: rgba(255,255,255,0.3);
+        }
+
+        nav {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+
+        nav a {
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            padding: 8px 0;
+            border-bottom: 2px solid transparent;
+        }
+
+        nav a:hover {
+            color: #fff;
+            border-bottom-color: #4a5cff;
+        }
+
+        nav a.active {
+            color: #fff;
+            border-bottom-color: #4a5cff;
+        }
+
+        .create-btn {
+            background: linear-gradient(135deg, #4a5cff, #6a3cff);
+            color: #fff !important;
+            padding: 10px 24px !important;
+            border-radius: 25px;
+            border-bottom: none !important;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .create-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(74, 92, 255, 0.3);
+            border-bottom: none !important;
+        }
+
+        /* Сетка блогов */
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+            padding: 40px 0;
+        }
+
+        .blog-card {
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid rgba(100, 130, 255, 0.08);
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(100, 130, 255, 0.25);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 60px rgba(74, 92, 255, 0.05);
+            background: rgba(255,255,255,0.06);
+        }
+
+        .blog-card .date {
+            font-size: 12px;
+            color: rgba(255,255,255,0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .blog-card h3 {
+            font-size: 20px;
+            margin-bottom: 12px;
+            line-height: 1.3;
+            color: #fff;
+        }
+
+        .blog-card .excerpt {
+            color: rgba(255,255,255,0.6);
+            font-size: 14px;
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+
+        .blog-card .tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .blog-card .tag {
+            background: rgba(74, 92, 255, 0.15);
+            color: #8a9cff;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .blog-card .author {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 18px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .blog-card .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4a5cff, #6a3cff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .blog-card .author-name {
+            font-size: 14px;
+            color: rgba(255,255,255,0.7);
+        }
+
+        /* Секция "Нет постов" */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: rgba(255,255,255,0.3);
+        }
+
+        .empty-state .icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: rgba(255,255,255,0.5);
+        }
+
+        .empty-state p {
+            font-size: 16px;
+        }
+
+        /* Модальное окно создания блога */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: rgba(10, 10, 35, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 550px;
+            width: 100%;
+            border: 1px solid rgba(100, 130, 255, 0.15);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+            animation: modalIn 0.3s ease;
+        }
+
+        @keyframes modalIn {
+            0% { opacity: 0; transform: scale(0.95) translateY(20px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .modal h2 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .modal .sub {
+            color: rgba(255,255,255,0.4);
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .modal .form-group {
+            margin-bottom: 18px;
+        }
+
+        .modal .form-group label {
+            display: block;
+            color: rgba(255,255,255,0.7);
+            font-size: 13px;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .modal .form-group input,
+        .modal .form-group textarea,
+        .modal .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(100, 130, 255, 0.15);
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .modal .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .modal .form-group input:focus,
+        .modal .form-group textarea:focus,
+        .modal .form-group select:focus {
+            border-color: #4a5cff;
+            background: rgba(255,255,255,0.08);
+            box-shadow: 0 0 20px rgba(74, 92, 255, 0.1);
+        }
+
+        .modal .form-group select option {
+            background: #1a1a3a;
+        }
+
+        .modal .btn-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .modal .btn-row button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal .btn-submit {
+            background: linear-gradient(135deg, #4a5cff, #6a3cff);
+            color: #fff;
+        }
+
+        .modal .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(74, 92, 255, 0.3);
+        }
+
+        .modal .btn-cancel {
+            background: rgba(255,255,255,0.05);
+            color: rgba(255,255,255,0.6);
+        }
+
+        .modal .btn-cancel:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* Адаптив */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 15px;
+            }
+
+            nav {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .blog-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal {
+                padding: 25px;
+            }
+        }
+    </style>
 </head>
 <body>
 
     <!-- Космический фон -->
-    <div class="space"></div>
-    <div class="milky-way"></div>
-    
-    <!-- Туманности -->
-    <div class="nebula" style="width: 500px; height: 500px; background: radial-gradient(circle, #4a0080, #1a0040); top: 10%; left: 5%;"></div>
-    <div class="nebula" style="width: 600px; height: 400px; background: radial-gradient(circle, #003366, #00001a); bottom: 15%; right: 8%; animation-delay: -10s;"></div>
-    <div class="nebula" style="width: 350px; height: 350px; background: radial-gradient(circle, #660044, #330022); top: 50%; left: 60%; animation-delay: -20s;"></div>
-    <div class="nebula" style="width: 450px; height: 450px; background: radial-gradient(circle, #1a0044, #000022); bottom: 30%; left: 20%; animation-delay: -5s;"></div>
+    <div class="space-bg"></div>
 
-    <!-- Слой звёзд -->
+    <!-- Туманности -->
+    <div class="nebula" style="width: 600px; height: 500px; background: radial-gradient(circle, #1a2a6a, transparent); top: 5%; left: -10%;"></div>
+    <div class="nebula" style="width: 500px; height: 400px; background: radial-gradient(circle, #2a1a5a, transparent); bottom: 10%; right: -5%; animation-delay: -15s;"></div>
+    <div class="nebula" style="width: 400px; height: 400px; background: radial-gradient(circle, #1a3a5a, transparent); top: 40%; left: 50%; animation-delay: -25s;"></div>
+
+    <!-- Звёзды -->
     <div class="stars-layer" id="starsLayer"></div>
 
-    <!-- Форма регистрации -->
-    <div class="auth-container" id="authContainer">
-        <div class="auth-title">✨ Космическая регистрация</div>
-        <p class="auth-subtitle">Создайте аккаунт для доступа к звёздам</p>
+    <!-- Контент -->
+    <div class="content">
+        <header>
+            <div class="logo">✦ космос<span>блог</span></div>
+            <nav>
+                <a href="#" class="active">Все статьи</a>
+                <a href="#">Популярное</a>
+                <a href="#">О проекте</a>
+                <a href="#" class="create-btn" id="openModalBtn">+ Создать пост</a>
+            </nav>
+        </header>
 
-        <form id="registerForm">
-            <div class="form-group">
-                <label for="username">👤 Имя пользователя</label>
-                <input type="text" id="username" placeholder="Введите имя" required />
-            </div>
-
-            <div class="form-group">
-                <label for="email">📧 Email</label>
-                <input type="email" id="email" placeholder="Введите email" required />
-            </div>
-
-            <div class="form-group">
-                <label for="password">🔒 Пароль</label>
-                <input type="password" id="password" placeholder="Минимум 6 символов" required minlength="6" />
-            </div>
-
-            <div class="form-group">
-                <label for="passwordConfirm">✅ Подтвердите пароль</label>
-                <input type="password" id="passwordConfirm" placeholder="Повторите пароль" required />
-            </div>
-
-            <button type="submit" class="register-btn">🚀 Зарегистрироваться</button>
-        </form>
-
-        <div id="message" class="message"></div>
-
-        <div class="login-link">
-            Уже есть аккаунт? <a href="#" id="showLogin">Войти</a>
+        <div class="blog-grid" id="blogGrid">
+            <!-- Посты будут добавляться сюда -->
         </div>
     </div>
 
-    <!-- Форма входа (скрыта по умолчанию) -->
-    <div class="auth-container" id="loginContainer" style="display: none;">
-        <div class="auth-title">🚀 Вход в систему</div>
-        <p class="auth-subtitle">Добро пожаловать обратно!</p>
+    <!-- Модальное окно -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <h2>🚀 Новый пост</h2>
+            <p class="sub">Расскажите миру о космосе</p>
 
-        <form id="loginForm">
-            <div class="form-group">
-                <label for="loginEmail">📧 Email</label>
-                <input type="email" id="loginEmail" placeholder="Введите email" required />
-            </div>
+            <form id="postForm">
+                <div class="form-group">
+                    <label>Заголовок</label>
+                    <input type="text" id="postTitle" placeholder="Например: Как устроена Вселенная" required />
+                </div>
 
-            <div class="form-group">
-                <label for="loginPassword">🔒 Пароль</label>
-                <input type="password" id="loginPassword" placeholder="Введите пароль" required />
-            </div>
+                <div class="form-group">
+                    <label>Текст</label>
+                    <textarea id="postContent" placeholder="Поделитесь своими мыслями..." required></textarea>
+                </div>
 
-            <button type="submit" class="register-btn">🌌 Войти</button>
-        </form>
+                <div class="form-group">
+                    <label>Теги</label>
+                    <input type="text" id="postTags" placeholder="через запятую: космос, звёзды, наука" />
+                </div>
 
-        <div id="loginMessage" class="message"></div>
+                <div class="form-group">
+                    <label>Автор</label>
+                    <input type="text" id="postAuthor" placeholder="Ваше имя" value="Космический странник" />
+                </div>
 
-        <div class="login-link">
-            Нет аккаунта? <a href="#" id="showRegister">Зарегистрироваться</a>
+                <div class="btn-row">
+                    <button type="button" class="btn-cancel" id="closeModalBtn">Отмена</button>
+                    <button type="submit" class="btn-submit">✨ Опубликовать</button>
+                </div>
+            </form>
         </div>
     </div>
 
-    <!-- Панель после входа (скрыта) -->
-    <div class="auth-container" id="welcomeContainer" style="display: none;">
-        <div class="auth-title">🌟 Добро пожаловать!</div>
-        <p class="auth-subtitle" id="welcomeUser">Вы вошли в систему</p>
-        <button class="register-btn" id="logoutBtn" style="margin-top: 20px;">🚪 Выйти</button>
-    </div>
+    <script>
+        // ===== ЗВЁЗДЫ =====
+        (function() {
+            const layer = document.getElementById('starsLayer');
+            const count = 600;
 
-    <script src="stars.js"></script>
-    <script src="script.js"></script>
+            for (let i = 0; i < count; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                const size = Math.random() * 2.5 + 0.5;
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.background = `rgba(255,255,255,${Math.random() * 0.5 + 0.3})`;
+                star.style.setProperty('--duration', (Math.random() * 5 + 2) + 's');
+                star.style.setProperty('--min-opacity', Math.random() * 0.2 + 0.05);
+                star.style.setProperty('--max-opacity', Math.random() * 0.5 + 0.3);
+                star.style.animationDelay = Math.random() * 6 + 's';
+                layer.appendChild(star);
+            }
+
+            // Яркие звёзды
+            for (let i = 0; i < 20; i++) {
+                const star = document.createElement('div');
+                star.className = 'star-bright';
+                const size = Math.random() * 3 + 2;
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.background = `rgba(200,220,255,${Math.random() * 0.4 + 0.6})`;
+                star.style.boxShadow = `0 0 ${size * 4}px rgba(150,180,255,0.3)`;
+                star.style.setProperty('--duration', (Math.random() * 4 + 2) + 's');
+                star.style.animationDelay = Math.random() * 5 + 's';
+                layer.appendChild(star);
+            }
+        })();
+
+        // ===== БЛОГ =====
+        const posts = JSON.parse(localStorage.getItem('cosmicPosts')) || [];
+
+        // Сохраняем посты
+        function savePosts() {
+            localStorage.setItem('cosmicPosts', JSON.stringify(posts));
+        }
+
+        // Рендерим посты
+        function renderPosts() {
+            const grid = document.getElementById('blogGrid');
+            
+            if (posts.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column: 1/-1;">
+                        <div class="empty-state">
+                            <div class="icon">🌌</div>
+                            <h2>Пока нет постов</h2>
+                            <p>Нажмите «Создать пост» и станьте первым автором</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = posts.map((post, index) => `
+                <div class="blog-card">
+                    <div class="date">${post.date}</div>
+                    <h3>${post.title}</h3>
+                    <div class="excerpt">${post.content.length > 120 ? post.content.slice(0, 120) + '...' : post.content}</div>
+                    <div class="tags">
+                        ${post.tags.map(tag => `<span class="tag">#${tag.trim()}</span>`).join('')}
+                    </div>
+                    <div class="author">
+                        <div class="avatar">${post.author.charAt(0).toUpperCase()}</div>
+                        <span class="author-name">${post.author}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Добавляем пост
+        function addPost(title, content, tags, author) {
+            const now = new Date();
+            const date = now.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+            
+            posts.unshift({
+                id: Date.now(),
+                title: title.trim(),
+                content: content.trim(),
+                tags: tags.split(',').map(t => t.trim()).filter(t => t),
+                author: author.trim() || 'Космический странник',
+                date: date,
+                createdAt: now.toISOString()
+            });
+            
+            savePosts();
+            renderPosts();
+        }
+
+        // ===== МОДАЛКА =====
+        const modal = document.getElementById('modalOverlay');
+        const openBtn = document.getElementById('openModalBtn');
+        const closeBtn = document.getElementById('closeModalBtn');
+        const form = document.getElementById('postForm');
+
+        openBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        closeBtn.addEventListener('click', () => {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+            form.reset();
+        });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+                form.reset();
+            }
+        });
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const title = document.getElementById('postTitle').value;
+            const content = document.getElementById('postContent').value;
+            const tags = document.getElementById('postTags').value || 'космос';
+            const author = document.getElementById('postAuthor').value;
+
+            if (!title.trim() || !content.trim()) {
+                alert('Заполните заголовок и текст поста');
+                return;
+            }
+
+            addPost(title, content, tags, author);
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+            form.reset();
+        });
+
+        // ===== ЗАГРУЗКА =====
+        renderPosts();
+
+        console.log('🌌 Космический блог загружен');
+        console.log(`📝 Постов: ${posts.length}`);
+    </script>
+
 </body>
 </html>
