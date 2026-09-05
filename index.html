@@ -3,248 +3,15 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Реалистичный космос</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            min-height: 100vh;
-            background: #000000;
-            overflow: hidden;
-            position: relative;
-        }
-
-        /* Основной космический слой */
-        .space {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(ellipse at 30% 40%, #0a0015 0%, #000000 70%);
-            z-index: 0;
-        }
-
-        /* Слой со звёздами */
-        .stars-layer {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        /* Стиль звёзд */
-        .star {
-            position: absolute;
-            border-radius: 50%;
-            background: white;
-            animation: twinkle var(--duration) ease-in-out infinite alternate;
-        }
-
-        /* Мерцание звёзд */
-        @keyframes twinkle {
-            0% {
-                opacity: var(--min-opacity);
-                transform: scale(0.8);
-            }
-            100% {
-                opacity: var(--max-opacity);
-                transform: scale(1.2);
-            }
-        }
-
-        /* Крупные звёзды с крестообразным свечением */
-        .star-bright {
-            position: absolute;
-            border-radius: 50%;
-            background: white;
-            animation: twinkle-bright var(--duration) ease-in-out infinite alternate;
-        }
-
-        .star-bright::before,
-        .star-bright::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
-        }
-
-        .star-bright::before {
-            width: 300%;
-            height: 4px;
-            filter: blur(2px);
-        }
-
-        .star-bright::after {
-            width: 4px;
-            height: 300%;
-            filter: blur(2px);
-        }
-
-        @keyframes twinkle-bright {
-            0% {
-                opacity: 0.6;
-                transform: scale(0.9);
-                filter: brightness(0.8);
-            }
-            100% {
-                opacity: 1;
-                transform: scale(1.1);
-                filter: brightness(1.3);
-            }
-        }
-
-        /* Туманности (небулы) */
-        .nebula {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.3;
-            z-index: 0;
-            pointer-events: none;
-            animation: nebula-float 30s ease-in-out infinite alternate;
-        }
-
-        @keyframes nebula-float {
-            0% {
-                transform: translate(0, 0) scale(1);
-            }
-            100% {
-                transform: translate(30px, -20px) scale(1.1);
-            }
-        }
-
-        /* Падающие звёзды (метеоры) */
-        .shooting-star {
-            position: fixed;
-            width: 2px;
-            height: 2px;
-            background: white;
-            border-radius: 50%;
-            z-index: 2;
-            pointer-events: none;
-            animation: shoot var(--duration) linear infinite;
-            opacity: 0;
-        }
-
-        .shooting-star::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100px;
-            height: 1px;
-            background: linear-gradient(to left, rgba(255,255,255,0.8), transparent);
-            transform: rotate(0deg) translateX(-50%);
-            transform-origin: right center;
-        }
-
-        .shooting-star::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 60px;
-            height: 1px;
-            background: linear-gradient(to left, rgba(200,180,255,0.4), transparent);
-            transform: rotate(0deg) translateX(-50%) translateY(2px);
-            transform-origin: right center;
-        }
-
-        @keyframes shoot {
-            0% {
-                opacity: 0;
-                transform: translate(0, 0) rotate(0deg);
-            }
-            5% {
-                opacity: 1;
-            }
-            15% {
-                opacity: 0;
-                transform: translate(var(--travel-x), var(--travel-y)) rotate(0deg);
-            }
-            100% {
-                opacity: 0;
-                transform: translate(var(--travel-x), var(--travel-y)) rotate(0deg);
-            }
-        }
-
-        /* Млечный путь (полоса) */
-        .milky-way {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none;
-            background: radial-gradient(ellipse at 60% 50%, rgba(100,80,180,0.08) 0%, transparent 50%),
-                        radial-gradient(ellipse at 40% 70%, rgba(80,60,160,0.06) 0%, transparent 40%),
-                        radial-gradient(ellipse at 70% 30%, rgba(120,100,200,0.05) 0%, transparent 35%);
-            filter: blur(30px);
-        }
-
-        /* Мелкие звёзды-пыль */
-        .dust {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.3);
-            animation: dust-float var(--duration) linear infinite;
-        }
-
-        @keyframes dust-float {
-            0% {
-                transform: translate(0, 0);
-                opacity: 0.1;
-            }
-            50% {
-                opacity: 0.4;
-            }
-            100% {
-                transform: translate(var(--drift-x), var(--drift-y));
-                opacity: 0.1;
-            }
-        }
-
-        /* Гало вокруг ярких звёзд */
-        .halo {
-            position: absolute;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
-            pointer-events: none;
-            animation: halo-pulse 4s ease-in-out infinite alternate;
-        }
-
-        @keyframes halo-pulse {
-            0% {
-                opacity: 0.3;
-                transform: scale(0.8);
-            }
-            100% {
-                opacity: 0.8;
-                transform: scale(1.2);
-            }
-        }
-    </style>
+    <title>Космическая регистрация</title>
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-    <!-- Чёрный фон с лёгким градиентом -->
+    <!-- Космический фон -->
     <div class="space"></div>
-
-    <!-- Млечный путь -->
     <div class="milky-way"></div>
-
+    
     <!-- Туманности -->
     <div class="nebula" style="width: 500px; height: 500px; background: radial-gradient(circle, #4a0080, #1a0040); top: 10%; left: 5%;"></div>
     <div class="nebula" style="width: 600px; height: 400px; background: radial-gradient(circle, #003366, #00001a); bottom: 15%; right: 8%; animation-delay: -10s;"></div>
@@ -254,165 +21,76 @@
     <!-- Слой звёзд -->
     <div class="stars-layer" id="starsLayer"></div>
 
-    <script>
-        (function() {
-            const layer = document.getElementById('starsLayer');
-            const starCount = 800;
-            const brightStarCount = 30;
-            const dustCount = 150;
-            const shootingStarCount = 5;
+    <!-- Форма регистрации -->
+    <div class="auth-container" id="authContainer">
+        <div class="auth-title">✨ Космическая регистрация</div>
+        <p class="auth-subtitle">Создайте аккаунт для доступа к звёздам</p>
 
-            const colors = [
-                '#ffffff', '#aaccff', '#ffddaa', '#ffaaff', 
-                '#88ddff', '#ffcc88', '#cc88ff', '#aaffdd'
-            ];
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="username">👤 Имя пользователя</label>
+                <input type="text" id="username" placeholder="Введите имя" required />
+            </div>
 
-            // Создание обычных звёзд
-            for (let i = 0; i < starCount; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                
-                const size = Math.random() * 2.5 + 0.5;
-                star.style.width = size + 'px';
-                star.style.height = size + 'px';
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                
-                const color = colors[Math.floor(Math.random() * colors.length)];
-                star.style.background = color;
-                
-                star.style.setProperty('--duration', (Math.random() * 4 + 2) + 's');
-                star.style.setProperty('--min-opacity', Math.random() * 0.3 + 0.1);
-                star.style.setProperty('--max-opacity', Math.random() * 0.7 + 0.3);
-                
-                star.style.animationDelay = Math.random() * 5 + 's';
-                
-                // Добавляем свечение для некоторых звёзд
-                if (Math.random() > 0.7) {
-                    star.style.boxShadow = `0 0 ${Math.random() * 6 + 2}px ${color}`;
-                }
-                
-                layer.appendChild(star);
-            }
+            <div class="form-group">
+                <label for="email">📧 Email</label>
+                <input type="email" id="email" placeholder="Введите email" required />
+            </div>
 
-            // Яркие звёзды с крестом
-            for (let i = 0; i < brightStarCount; i++) {
-                const star = document.createElement('div');
-                star.className = 'star-bright';
-                
-                const size = Math.random() * 4 + 3;
-                star.style.width = size + 'px';
-                star.style.height = size + 'px';
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                
-                const colors_bright = ['#ffffff', '#ccddff', '#ffeedd', '#ffddff'];
-                const color = colors_bright[Math.floor(Math.random() * colors_bright.length)];
-                star.style.background = color;
-                star.style.boxShadow = `0 0 ${size * 3}px ${color}`;
-                
-                star.style.setProperty('--duration', (Math.random() * 3 + 3) + 's');
-                star.style.animationDelay = Math.random() * 4 + 's';
-                
-                layer.appendChild(star);
+            <div class="form-group">
+                <label for="password">🔒 Пароль</label>
+                <input type="password" id="password" placeholder="Минимум 6 символов" required minlength="6" />
+            </div>
 
-                // Гало вокруг яркой звезды
-                if (Math.random() > 0.5) {
-                    const halo = document.createElement('div');
-                    halo.className = 'halo';
-                    halo.style.width = (size * 8) + 'px';
-                    halo.style.height = (size * 8) + 'px';
-                    halo.style.left = parseFloat(star.style.left) - (size * 3.5) + '%';
-                    halo.style.top = parseFloat(star.style.top) - (size * 3.5) + '%';
-                    halo.style.animationDelay = (Math.random() * 3) + 's';
-                    layer.appendChild(halo);
-                }
-            }
+            <div class="form-group">
+                <label for="passwordConfirm">✅ Подтвердите пароль</label>
+                <input type="password" id="passwordConfirm" placeholder="Повторите пароль" required />
+            </div>
 
-            // Пылевые звёзды (мелкие, движущиеся)
-            for (let i = 0; i < dustCount; i++) {
-                const dust = document.createElement('div');
-                dust.className = 'dust';
-                
-                const size = Math.random() * 1.5 + 0.3;
-                dust.style.width = size + 'px';
-                dust.style.height = size + 'px';
-                dust.style.left = Math.random() * 100 + '%';
-                dust.style.top = Math.random() * 100 + '%';
-                dust.style.background = `rgba(255,255,255,${Math.random() * 0.3 + 0.1})`;
-                
-                dust.style.setProperty('--duration', (Math.random() * 20 + 15) + 's');
-                dust.style.setProperty('--drift-x', (Math.random() * 100 - 50) + 'px');
-                dust.style.setProperty('--drift-y', (Math.random() * 100 - 50) + 'px');
-                dust.style.animationDelay = Math.random() * 20 + 's';
-                
-                layer.appendChild(dust);
-            }
+            <button type="submit" class="register-btn">🚀 Зарегистрироваться</button>
+        </form>
 
-            // Падающие звёзды
-            for (let i = 0; i < shootingStarCount; i++) {
-                const star = document.createElement('div');
-                star.className = 'shooting-star';
-                
-                const startX = Math.random() * 80 + 10;
-                const startY = Math.random() * 40 + 5;
-                const travelX = (Math.random() * 300 + 200) * (Math.random() > 0.5 ? 1 : -1);
-                const travelY = (Math.random() * 300 + 200);
-                
-                star.style.left = startX + '%';
-                star.style.top = startY + '%';
-                star.style.setProperty('--travel-x', travelX + 'px');
-                star.style.setProperty('--travel-y', travelY + 'px');
-                star.style.setProperty('--duration', (Math.random() * 4 + 3) + 's');
-                star.style.animationDelay = (Math.random() * 15 + 5) + 's';
-                
-                layer.appendChild(star);
-            }
+        <div id="message" class="message"></div>
 
-            // Дополнительные мерцающие звёзды разного размера
-            for (let i = 0; i < 200; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                
-                const size = Math.random() * 1.5 + 0.3;
-                star.style.width = size + 'px';
-                star.style.height = size + 'px';
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                
-                const hue = 200 + Math.random() * 60;
-                star.style.background = `hsl(${hue}, 80%, 85%)`;
-                star.style.boxShadow = `0 0 ${Math.random() * 4 + 1}px hsl(${hue}, 80%, 70%)`;
-                
-                star.style.setProperty('--duration', (Math.random() * 6 + 3) + 's');
-                star.style.setProperty('--min-opacity', Math.random() * 0.2 + 0.05);
-                star.style.setProperty('--max-opacity', Math.random() * 0.5 + 0.3);
-                star.style.animationDelay = Math.random() * 8 + 's';
-                
-                layer.appendChild(star);
-            }
+        <div class="login-link">
+            Уже есть аккаунт? <a href="#" id="showLogin">Войти</a>
+        </div>
+    </div>
 
-            // Дополнительный слой очень мелких звёзд для глубины
-            for (let i = 0; i < 500; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                
-                const size = Math.random() * 0.8 + 0.2;
-                star.style.width = size + 'px';
-                star.style.height = size + 'px';
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                star.style.background = 'rgba(255,255,255,0.3)';
-                star.style.setProperty('--duration', (Math.random() * 8 + 4) + 's');
-                star.style.setProperty('--min-opacity', '0.05');
-                star.style.setProperty('--max-opacity', '0.2');
-                star.style.animationDelay = Math.random() * 10 + 's';
-                
-                layer.appendChild(star);
-            }
+    <!-- Форма входа (скрыта по умолчанию) -->
+    <div class="auth-container" id="loginContainer" style="display: none;">
+        <div class="auth-title">🚀 Вход в систему</div>
+        <p class="auth-subtitle">Добро пожаловать обратно!</p>
 
-        })();
-    </script>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="loginEmail">📧 Email</label>
+                <input type="email" id="loginEmail" placeholder="Введите email" required />
+            </div>
 
+            <div class="form-group">
+                <label for="loginPassword">🔒 Пароль</label>
+                <input type="password" id="loginPassword" placeholder="Введите пароль" required />
+            </div>
+
+            <button type="submit" class="register-btn">🌌 Войти</button>
+        </form>
+
+        <div id="loginMessage" class="message"></div>
+
+        <div class="login-link">
+            Нет аккаунта? <a href="#" id="showRegister">Зарегистрироваться</a>
+        </div>
+    </div>
+
+    <!-- Панель после входа (скрыта) -->
+    <div class="auth-container" id="welcomeContainer" style="display: none;">
+        <div class="auth-title">🌟 Добро пожаловать!</div>
+        <p class="auth-subtitle" id="welcomeUser">Вы вошли в систему</p>
+        <button class="register-btn" id="logoutBtn" style="margin-top: 20px;">🚪 Выйти</button>
+    </div>
+
+    <script src="stars.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
