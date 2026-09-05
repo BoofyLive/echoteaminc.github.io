@@ -1,36 +1,41 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Космический блог</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EchoTeam.INC</title>
     <style>
+        /* ============ ОБЩИЕ СТИЛИ ============ */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        html,
         body {
-            min-height: 100vh;
-            background: #050510;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #fff;
-            overflow-x: hidden;
-        }
-
-        /* Космический фон */
-        .space-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
             width: 100%;
-            height: 100%;
-            background: radial-gradient(ellipse at 50% 50%, #0a0a2a 0%, #050510 60%, #000000 100%);
-            z-index: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background: #000;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        .stars-layer {
+        body {
+            overflow-y: auto;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            background: #000000;
+            overflow: hidden;
+        }
+
+        /* ============ ЗВЁЗДЫ ============ */
+        #stars {
             position: fixed;
             top: 0;
             left: 0;
@@ -38,260 +43,324 @@
             height: 100%;
             z-index: 1;
             pointer-events: none;
+            overflow: visible;
         }
 
         .star {
             position: absolute;
+            background: #ffffff;
             border-radius: 50%;
-            background: white;
-            animation: twinkle var(--duration) ease-in-out infinite alternate;
+            will-change: transform;
+            transition: none;
         }
 
-        @keyframes twinkle {
-            0% { opacity: var(--min-opacity); transform: scale(0.8); }
-            100% { opacity: var(--max-opacity); transform: scale(1.2); }
+        /* ============ ГРАДИЕНТЫ ============ */
+        .gradient {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            z-index: 2;
+            pointer-events: none;
+            opacity: 0.45;
+            background:
+                radial-gradient(ellipse at 50% 100%,
+                    rgba(0, 80, 255, 0.95) 0%,
+                    rgba(0, 60, 220, 0.8) 15%,
+                    rgba(0, 40, 180, 0.6) 30%,
+                    rgba(0, 25, 120, 0.4) 50%,
+                    rgba(0, 10, 60, 0.2) 70%,
+                    transparent 100%);
         }
 
-        .star-bright {
-            position: absolute;
-            border-radius: 50%;
-            background: white;
-            animation: twinkle-bright var(--duration) ease-in-out infinite alternate;
-        }
-
-        .star-bright::before,
-        .star-bright::after {
+        .gradient::before {
             content: '';
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40%;
+            background:
+                radial-gradient(ellipse at 50% 100%,
+                    rgba(80, 180, 255, 0.7) 0%,
+                    rgba(40, 140, 255, 0.4) 25%,
+                    rgba(0, 100, 255, 0.15) 50%,
+                    transparent 80%);
+            filter: blur(8px);
         }
 
-        .star-bright::before {
-            width: 300%;
-            height: 2px;
-            filter: blur(2px);
+        .gradient::after {
+            content: '';
+            position: absolute;
+            bottom: 5%;
+            left: 5%;
+            width: 90%;
+            height: 50%;
+            background:
+                radial-gradient(ellipse at 30% 100%,
+                    rgba(100, 200, 255, 0.25) 0%,
+                    rgba(50, 150, 255, 0.1) 40%,
+                    transparent 70%);
+            filter: blur(25px);
         }
 
-        .star-bright::after {
-            width: 2px;
-            height: 300%;
-            filter: blur(2px);
-        }
-
-        @keyframes twinkle-bright {
-            0% { opacity: 0.5; transform: scale(0.9); filter: brightness(0.8); }
-            100% { opacity: 1; transform: scale(1.1); filter: brightness(1.3); }
-        }
-
-        .nebula {
+        .gradient-glow {
             position: fixed;
-            border-radius: 50%;
-            filter: blur(100px);
-            opacity: 0.15;
-            z-index: 0;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 35%;
+            z-index: 3;
             pointer-events: none;
-            animation: nebula-float 40s ease-in-out infinite alternate;
+            opacity: 0.45;
+            background:
+                linear-gradient(to top,
+                    rgba(0, 100, 255, 0.5) 0%,
+                    rgba(0, 60, 200, 0.25) 30%,
+                    rgba(0, 30, 150, 0.1) 60%,
+                    transparent 100%);
+            filter: blur(15px);
         }
 
-        @keyframes nebula-float {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(40px, -30px) scale(1.1); }
+        .gradient-edge {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40%;
+            z-index: 2;
+            pointer-events: none;
+            opacity: 0.45;
+            background:
+                radial-gradient(ellipse at 20% 100%,
+                    rgba(0, 150, 255, 0.15) 0%,
+                    transparent 50%),
+                radial-gradient(ellipse at 80% 100%,
+                    rgba(0, 150, 255, 0.15) 0%,
+                    transparent 50%);
+            filter: blur(30px);
         }
 
-        /* Контент */
+        /* ============ КОНТЕНТ ============ */
         .content {
             position: relative;
-            z-index: 2;
-            max-width: 1100px;
+            z-index: 10;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 30px 20px;
-            min-height: 100vh;
+            padding: 30px 20px 100px;
         }
 
-        /* Шапка */
-        header {
+        /* ============ ШАПКА ============ */
+        .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 0 40px;
-            border-bottom: 1px solid rgba(100, 130, 255, 0.1);
+            padding: 20px 30px;
+            background: rgba(0, 20, 60, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(100, 200, 255, 0.2);
+            margin-bottom: 40px;
             flex-wrap: wrap;
             gap: 15px;
         }
 
-        .logo {
+        .header h1 {
             font-size: 28px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #6a8cff, #4a5cff);
+            background: linear-gradient(135deg, #4fc3ff, #0066ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: 2px;
+            text-shadow: 0 0 30px rgba(0, 100, 255, 0.3);
         }
 
-        .logo span {
-            font-weight: 300;
-            background: none;
-            -webkit-text-fill-color: rgba(255,255,255,0.3);
-        }
-
-        nav {
+        .header-right {
             display: flex;
-            gap: 25px;
+            gap: 12px;
             align-items: center;
-        }
-
-        nav a {
-            color: rgba(255,255,255,0.6);
-            text-decoration: none;
-            font-size: 15px;
-            transition: all 0.3s ease;
-            padding: 8px 0;
-            border-bottom: 2px solid transparent;
-        }
-
-        nav a:hover {
-            color: #fff;
-            border-bottom-color: #4a5cff;
-        }
-
-        nav a.active {
-            color: #fff;
-            border-bottom-color: #4a5cff;
-        }
-
-        .create-btn {
-            background: linear-gradient(135deg, #4a5cff, #6a3cff);
-            color: #fff !important;
-            padding: 10px 24px !important;
-            border-radius: 25px;
-            border-bottom: none !important;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .create-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(74, 92, 255, 0.3);
-            border-bottom: none !important;
-        }
-
-        /* Сетка блогов */
-        .blog-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 30px;
-            padding: 40px 0;
-        }
-
-        .blog-card {
-            background: rgba(255,255,255,0.03);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            padding: 25px;
-            border: 1px solid rgba(100, 130, 255, 0.08);
-            transition: all 0.4s ease;
-            cursor: pointer;
-        }
-
-        .blog-card:hover {
-            transform: translateY(-6px);
-            border-color: rgba(100, 130, 255, 0.25);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 60px rgba(74, 92, 255, 0.05);
-            background: rgba(255,255,255,0.06);
-        }
-
-        .blog-card .date {
-            font-size: 12px;
-            color: rgba(255,255,255,0.3);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 10px;
-        }
-
-        .blog-card h3 {
-            font-size: 20px;
-            margin-bottom: 12px;
-            line-height: 1.3;
-            color: #fff;
-        }
-
-        .blog-card .excerpt {
-            color: rgba(255,255,255,0.6);
-            font-size: 14px;
-            line-height: 1.7;
-            margin-bottom: 15px;
-        }
-
-        .blog-card .tags {
-            display: flex;
-            gap: 8px;
             flex-wrap: wrap;
         }
 
-        .blog-card .tag {
-            background: rgba(74, 92, 255, 0.15);
-            color: #8a9cff;
-            padding: 4px 14px;
+        .header-right .badge {
+            padding: 6px 16px;
+            background: rgba(255, 145, 0, 0.15);
+            border: 1px solid rgba(255, 145, 0, 0.3);
             border-radius: 20px;
             font-size: 12px;
-            font-weight: 500;
+            color: #ffab40;
         }
 
-        .blog-card .author {
+        /* ============ ПОСТЫ ============ */
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 30px;
+            margin-top: 10px;
+        }
+
+        @media (min-width: 1600px) {
+            .posts-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 1100px) {
+            .posts-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 700px) {
+            .posts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .post-card {
+            background: rgba(0, 20, 60, 0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(100, 200, 255, 0.1);
+            border-radius: 20px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
             display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 18px;
-            padding-top: 15px;
-            border-top: 1px solid rgba(255,255,255,0.05);
+            flex-direction: column;
+            height: 100%;
+            min-height: 300px;
         }
 
-        .blog-card .avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #4a5cff, #6a3cff);
+        .post-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(100, 200, 255, 0.3);
+            box-shadow: 0 10px 40px rgba(0, 100, 255, 0.15);
+        }
+
+        .post-card .post-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 12px;
+            color: #90caf9;
+            flex-shrink: 0;
+        }
+
+        .post-card .post-author {
+            font-weight: 600;
+            color: #4fc3ff;
+        }
+
+        .post-card .post-date {
+            opacity: 0.7;
+        }
+
+        .post-card h3 {
+            font-size: 20px;
+            margin-bottom: 12px;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .post-card .post-content-preview {
+            color: #b0bec5;
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 15px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex-grow: 1;
+        }
+
+        .post-card .post-image-wrapper {
+            width: 100%;
+            height: 200px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.03);
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .post-card .post-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .post-card:hover .post-image-wrapper img {
+            transform: scale(1.03);
+        }
+
+        .post-card .post-image-placeholder {
+            width: 100%;
+            height: 200px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, rgba(0, 80, 255, 0.1), rgba(0, 40, 180, 0.05));
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
+            color: rgba(255, 255, 255, 0.1);
+            font-size: 48px;
+            flex-shrink: 0;
+        }
+
+        .post-card .read-more {
+            color: #4fc3ff;
+            font-size: 13px;
             font-weight: 600;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+            flex-shrink: 0;
+            margin-top: auto;
         }
 
-        .blog-card .author-name {
-            font-size: 14px;
-            color: rgba(255,255,255,0.7);
+        .post-card:hover .read-more {
+            opacity: 1;
         }
 
-        /* Секция "Нет постов" */
-        .empty-state {
+        .post-card .dev-badge {
+            display: inline-block;
+            padding: 2px 12px;
+            background: linear-gradient(135deg, #ff6f00, #ff9100);
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 700;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-left: 8px;
+        }
+
+        .empty-posts {
             text-align: center;
-            padding: 80px 20px;
-            color: rgba(255,255,255,0.3);
+            padding: 60px 20px;
+            color: #90caf9;
+            grid-column: 1 / -1;
         }
 
-        .empty-state .icon {
-            font-size: 64px;
-            margin-bottom: 20px;
-            opacity: 0.5;
+        .empty-posts p {
+            font-size: 18px;
+            opacity: 0.7;
         }
 
-        .empty-state h2 {
-            font-size: 24px;
-            margin-bottom: 10px;
-            color: rgba(255,255,255,0.5);
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #4fc3ff;
+            font-size: 18px;
+            grid-column: 1 / -1;
         }
 
-        .empty-state p {
-            font-size: 16px;
-        }
-
-        /* Модальное окно создания блога */
+        /* ============ МОДАЛЬНОЕ ОКНО ============ */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -299,363 +368,533 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(10px);
-            z-index: 100;
-            align-items: center;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(15px);
+            z-index: 1000;
             justify-content: center;
-            padding: 20px;
+            align-items: center;
+            padding: 30px;
+            animation: fadeIn 0.3s ease;
+            overflow-y: auto;
         }
 
         .modal-overlay.active {
             display: flex;
         }
 
-        .modal {
-            background: rgba(10, 10, 35, 0.95);
-            border-radius: 20px;
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-content {
+            background: linear-gradient(145deg, #0a1a3a, #06102a);
+            border-radius: 24px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
             padding: 40px;
-            max-width: 550px;
-            width: 100%;
-            border: 1px solid rgba(100, 130, 255, 0.15);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
-            animation: modalIn 0.3s ease;
+            border: 1px solid rgba(100, 200, 255, 0.2);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
+            position: relative;
         }
 
-        @keyframes modalIn {
-            0% { opacity: 0; transform: scale(0.95) translateY(20px); }
-            100% { opacity: 1; transform: scale(1) translateY(0); }
+        .modal-content::-webkit-scrollbar {
+            width: 4px;
         }
 
-        .modal h2 {
+        .modal-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb {
+            background: rgba(79, 195, 255, 0.3);
+            border-radius: 4px;
+        }
+
+        .modal-close {
+            position: sticky;
+            top: 0;
+            float: right;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
             font-size: 24px;
-            margin-bottom: 8px;
-        }
-
-        .modal .sub {
-            color: rgba(255,255,255,0.4);
-            font-size: 14px;
-            margin-bottom: 25px;
-        }
-
-        .modal .form-group {
-            margin-bottom: 18px;
-        }
-
-        .modal .form-group label {
-            display: block;
-            color: rgba(255,255,255,0.7);
-            font-size: 13px;
-            margin-bottom: 5px;
-            font-weight: 500;
-        }
-
-        .modal .form-group input,
-        .modal .form-group textarea,
-        .modal .form-group select {
-            width: 100%;
-            padding: 12px 15px;
-            border-radius: 10px;
-            border: 1px solid rgba(100, 130, 255, 0.15);
-            background: rgba(255,255,255,0.05);
-            color: #fff;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            outline: none;
-            font-family: inherit;
-        }
-
-        .modal .form-group textarea {
-            min-height: 120px;
-            resize: vertical;
-        }
-
-        .modal .form-group input:focus,
-        .modal .form-group textarea:focus,
-        .modal .form-group select:focus {
-            border-color: #4a5cff;
-            background: rgba(255,255,255,0.08);
-            box-shadow: 0 0 20px rgba(74, 92, 255, 0.1);
-        }
-
-        .modal .form-group select option {
-            background: #1a1a3a;
-        }
-
-        .modal .btn-row {
-            display: flex;
-            gap: 12px;
-            margin-top: 10px;
-        }
-
-        .modal .btn-row button {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 10px;
-            font-size: 15px;
-            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            margin-left: auto;
+            margin-bottom: 10px;
         }
 
-        .modal .btn-submit {
-            background: linear-gradient(135deg, #4a5cff, #6a3cff);
+        .modal-close:hover {
+            background: rgba(255, 23, 68, 0.2);
+            border-color: #ff1744;
+            transform: rotate(90deg);
+        }
+
+        .modal-content .post-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 13px;
+            color: #90caf9;
+            clear: both;
+        }
+
+        .modal-content .post-author {
+            font-weight: 600;
+            color: #4fc3ff;
+        }
+
+        .modal-content .post-date {
+            opacity: 0.7;
+        }
+
+        .modal-content h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
             color: #fff;
+            line-height: 1.3;
         }
 
-        .modal .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(74, 92, 255, 0.3);
+        .modal-content .post-full-content {
+            color: #b0bec5;
+            line-height: 1.8;
+            font-size: 16px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
         }
 
-        .modal .btn-cancel {
-            background: rgba(255,255,255,0.05);
-            color: rgba(255,255,255,0.6);
+        .modal-content .post-full-content .modal-image-wrapper {
+            width: 100%;
+            margin: 15px 0;
+            border-radius: 12px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.3);
+            text-align: center;
         }
 
-        .modal .btn-cancel:hover {
-            background: rgba(255,255,255,0.1);
+        .modal-content .post-full-content .modal-image-wrapper img {
+            width: 100%;
+            max-height: 500px;
+            object-fit: contain;
+            border-radius: 12px;
+            display: block;
         }
 
-        /* Адаптив */
+        .modal-content .dev-badge {
+            display: inline-block;
+            padding: 2px 12px;
+            background: linear-gradient(135deg, #ff6f00, #ff9100);
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 700;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-left: 8px;
+        }
+
+        /* ============ СКРОЛЛБАР ============ */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, rgba(79, 195, 255, 0.3), rgba(0, 100, 255, 0.2));
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, rgba(79, 195, 255, 0.5), rgba(0, 100, 255, 0.3));
+        }
+
+        /* ============ АДАПТИВНОСТЬ ============ */
         @media (max-width: 768px) {
-            header {
+            .header {
                 flex-direction: column;
                 align-items: stretch;
-                gap: 15px;
+                text-align: center;
             }
 
-            nav {
-                flex-wrap: wrap;
+            .header-right {
                 justify-content: center;
             }
 
-            .blog-grid {
+            .posts-grid {
                 grid-template-columns: 1fr;
+                gap: 20px;
             }
 
-            .modal {
+            .modal-content {
                 padding: 25px;
+                margin: 10px;
+                max-height: 95vh;
+            }
+
+            .modal-content h2 {
+                font-size: 22px;
+            }
+
+            .modal-close {
+                top: 10px;
+                right: 15px;
+                width: 35px;
+                height: 35px;
+                font-size: 20px;
+                float: none;
+                margin: 0 0 10px auto;
+            }
+
+            .post-card .post-image-wrapper {
+                height: 180px;
+            }
+
+            .post-card .post-image-placeholder {
+                height: 180px;
+                font-size: 36px;
+            }
+
+            .modal-content .post-full-content .modal-image-wrapper img {
+                max-height: 300px;
+            }
+        }
+
+        @media (min-width: 1400px) {
+            .gradient {
+                height: 40%;
             }
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <!-- ЗВЁЗДЫ -->
+        <div id="stars"></div>
+        <div class="gradient"></div>
+        <div class="gradient-glow"></div>
+        <div class="gradient-edge"></div>
 
-    <!-- Космический фон -->
-    <div class="space-bg"></div>
+        <!-- КОНТЕНТ -->
+        <div class="content">
+            <!-- ШАПКА -->
+            <header class="header">
+                <h1>🚀 Космический блог</h1>
+                <div class="header-right">
+                    <span class="badge">✨ Читайте и вдохновляйтесь</span>
+                </div>
+            </header>
 
-    <!-- Туманности -->
-    <div class="nebula" style="width: 600px; height: 500px; background: radial-gradient(circle, #1a2a6a, transparent); top: 5%; left: -10%;"></div>
-    <div class="nebula" style="width: 500px; height: 400px; background: radial-gradient(circle, #2a1a5a, transparent); bottom: 10%; right: -5%; animation-delay: -15s;"></div>
-    <div class="nebula" style="width: 400px; height: 400px; background: radial-gradient(circle, #1a3a5a, transparent); top: 40%; left: 50%; animation-delay: -25s;"></div>
-
-    <!-- Звёзды -->
-    <div class="stars-layer" id="starsLayer"></div>
-
-    <!-- Контент -->
-    <div class="content">
-        <header>
-            <div class="logo">✦ космос<span>блог</span></div>
-            <nav>
-                <a href="#" class="active">Все статьи</a>
-                <a href="#">Популярное</a>
-                <a href="#">О проекте</a>
-                <a href="#" class="create-btn" id="openModalBtn">+ Создать пост</a>
-            </nav>
-        </header>
-
-        <div class="blog-grid" id="blogGrid">
-            <!-- Посты будут добавляться сюда -->
+            <!-- ПОСТЫ -->
+            <div id="postsContainer">
+                <div class="posts-grid" id="postsGrid">
+                    <div class="loading">⏳ Загрузка...</div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Модальное окно -->
-    <div class="modal-overlay" id="modalOverlay">
-        <div class="modal">
-            <h2>🚀 Новый пост</h2>
-            <p class="sub">Расскажите миру о космосе</p>
-
-            <form id="postForm">
-                <div class="form-group">
-                    <label>Заголовок</label>
-                    <input type="text" id="postTitle" placeholder="Например: Как устроена Вселенная" required />
+    <!-- МОДАЛЬНОЕ ОКНО -->
+    <div class="modal-overlay" id="postModal">
+        <div class="modal-content">
+            <button class="modal-close" id="closeModal">✕</button>
+            <div id="modalBody">
+                <div class="post-meta">
+                    <span class="post-author" id="modalAuthor">Автор</span>
+                    <span class="post-date" id="modalDate">Дата</span>
                 </div>
-
-                <div class="form-group">
-                    <label>Текст</label>
-                    <textarea id="postContent" placeholder="Поделитесь своими мыслями..." required></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label>Теги</label>
-                    <input type="text" id="postTags" placeholder="через запятую: космос, звёзды, наука" />
-                </div>
-
-                <div class="form-group">
-                    <label>Автор</label>
-                    <input type="text" id="postAuthor" placeholder="Ваше имя" value="Космический странник" />
-                </div>
-
-                <div class="btn-row">
-                    <button type="button" class="btn-cancel" id="closeModalBtn">Отмена</button>
-                    <button type="submit" class="btn-submit">✨ Опубликовать</button>
-                </div>
-            </form>
+                <h2 id="modalTitle">Заголовок</h2>
+                <div class="post-full-content" id="modalContent">Содержание</div>
+            </div>
         </div>
     </div>
 
     <script>
-        // ===== ЗВЁЗДЫ =====
+        // ============ ЗВЁЗДЫ ============
         (function() {
-            const layer = document.getElementById('starsLayer');
-            const count = 600;
+            const starsContainer = document.getElementById('stars');
+            const STAR_COUNT = 300;
+            const sizes = [0.5, 0.7, 0.9, 1.1, 1.4, 1.7, 2.0, 2.5, 3.0, 3.5];
+            let stars = [];
 
-            for (let i = 0; i < count; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                const size = Math.random() * 2.5 + 0.5;
-                star.style.width = size + 'px';
-                star.style.height = size + 'px';
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                star.style.background = `rgba(255,255,255,${Math.random() * 0.5 + 0.3})`;
-                star.style.setProperty('--duration', (Math.random() * 5 + 2) + 's');
-                star.style.setProperty('--min-opacity', Math.random() * 0.2 + 0.05);
-                star.style.setProperty('--max-opacity', Math.random() * 0.5 + 0.3);
-                star.style.animationDelay = Math.random() * 6 + 's';
-                layer.appendChild(star);
+            function moveStar(star) {
+                const speed = star.dataset.speed || (1 + Math.random() * 2);
+                let newLeft = parseFloat(star.style.left) - speed * 0.05;
+
+                if (newLeft < -20) {
+                    newLeft = 100 + Math.random() * 30;
+                    star.style.top = Math.random() * 100 + '%';
+                    const size = sizes[Math.floor(Math.random() * sizes.length)];
+                    star.style.width = size + 'px';
+                    star.style.height = size + 'px';
+                    const opacity = 0.4 + Math.random() * 0.6;
+                    star.style.opacity = opacity;
+                    if (size > 2.5) {
+                        star.style.boxShadow = '0 0 5px rgba(255,255,255,0.4)';
+                    } else {
+                        star.style.boxShadow = 'none';
+                    }
+                    star.dataset.speed = 1 + Math.random() * 2.5;
+                }
+
+                star.style.left = newLeft + '%';
+                requestAnimationFrame(() => moveStar(star));
             }
 
-            // Яркие звёзды
-            for (let i = 0; i < 20; i++) {
-                const star = document.createElement('div');
-                star.className = 'star-bright';
-                const size = Math.random() * 3 + 2;
-                star.style.width = size + 'px';
-                star.style.height = size + 'px';
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                star.style.background = `rgba(200,220,255,${Math.random() * 0.4 + 0.6})`;
-                star.style.boxShadow = `0 0 ${size * 4}px rgba(150,180,255,0.3)`;
-                star.style.setProperty('--duration', (Math.random() * 4 + 2) + 's');
-                star.style.animationDelay = Math.random() * 5 + 's';
-                layer.appendChild(star);
+            function createInitialStars() {
+                for (let i = 0; i < STAR_COUNT; i++) {
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    const size = sizes[Math.floor(Math.random() * sizes.length)];
+                    star.style.width = size + 'px';
+                    star.style.height = size + 'px';
+                    const left = (i / STAR_COUNT) * 130 - 20;
+                    star.style.left = left + '%';
+                    star.style.top = Math.random() * 100 + '%';
+                    const opacity = 0.4 + Math.random() * 0.6;
+                    star.style.opacity = opacity;
+                    star.dataset.speed = 1 + Math.random() * 2.5;
+                    if (size > 2.5) {
+                        star.style.boxShadow = '0 0 5px rgba(255,255,255,0.4)';
+                    }
+                    starsContainer.appendChild(star);
+                    stars.push(star);
+                }
             }
+
+            createInitialStars();
+            stars.forEach(star => moveStar(star));
         })();
 
-        // ===== БЛОГ =====
-        const posts = JSON.parse(localStorage.getItem('cosmicPosts')) || [];
+        // ============ ПОСТЫ ============
+        let posts = [];
 
-        // Сохраняем посты
-        function savePosts() {
-            localStorage.setItem('cosmicPosts', JSON.stringify(posts));
+        // Функция для обработки текста с тегами !image:(имя_фото)
+        function parseContent(content, isModal = false) {
+            if (!content) return 'Нет содержимого';
+
+            // Разбиваем текст на части по тегу !image:(...)
+            const parts = content.split(/!image:\(([^)]+)\)/);
+
+            let result = '';
+            let hasImage = false;
+
+            for (let i = 0; i < parts.length; i++) {
+                // Чётные индексы - текст, нечётные - имя картинки
+                if (i % 2 === 0) {
+                    // Текстовая часть
+                    const text = parts[i].trim();
+                    if (text) {
+                        result += `<span>${text}</span>`;
+                    }
+                } else {
+                    // Имя картинки
+                    const imageName = parts[i].trim();
+                    if (imageName) {
+                        hasImage = true;
+                        // Проверяем расширение
+                        const ext = imageName.split('.').pop().toLowerCase();
+                        const validExts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'ico'];
+                        const imagePath = validExts.includes(ext) ?
+                            `images/${imageName}` :
+                            `images/${imageName}.jpg`;
+
+                        if (isModal) {
+                            // Для модального окна - большая картинка
+                            result += `
+                                <div class="modal-image-wrapper">
+                                    <img src="${imagePath}" alt="${imageName}" 
+                                         onerror="this.parentElement.innerHTML='<span style=\\'color:#ff6b6b;\\'>⚠️ Картинка не найдена: ${imageName}</span>'">
+                                </div>
+                            `;
+                        } else {
+                            // Для превью - маленькая картинка
+                            result += `
+                                <div style="margin: 10px 0;">
+                                    <img src="${imagePath}" alt="${imageName}" 
+                                         style="width:100%; max-height:300px; object-fit:cover; border-radius:12px;"
+                                         onerror="this.style.display='none'">
+                                </div>
+                            `;
+                        }
+                    }
+                }
+            }
+
+            return result;
         }
 
-        // Рендерим посты
+        // Функция для получения текста без картинок (для превью)
+        function getPlainText(content) {
+            if (!content) return '';
+            return content.replace(/!image:\([^)]+\)/g, '').trim();
+        }
+
+        // Функция для получения первой картинки (для превью в карточке)
+        function getFirstImage(content) {
+            if (!content) return null;
+            const match = content.match(/!image:\(([^)]+)\)/);
+            if (match) {
+                const imageName = match[1].trim();
+                const ext = imageName.split('.').pop().toLowerCase();
+                const validExts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'ico'];
+                return validExts.includes(ext) ? `images/${imageName}` : `images/${imageName}.jpg`;
+            }
+            return null;
+        }
+
+        async function loadPosts() {
+            try {
+                const response = await fetch('/posts.json?' + Date.now());
+                if (!response.ok) throw new Error('Файл не найден');
+                const data = await response.json();
+                posts = data;
+                renderPosts();
+                return true;
+            } catch (error) {
+                // ДЕМО-ПОСТЫ
+                posts = [{
+                    id: Date.now() - 100000,
+                    title: '🚀 Добро пожаловать в космический блог!',
+                    content: 'Этот блог создан для вдохновения.\n\n!image:(welcome)\n\nЗдесь мы делимся мыслями, идеями и красивыми моментами. Каждый пост — это маленькая история. Читайте, вдохновляйтесь и наслаждайтесь!',
+                    author: 'Администратор',
+                    date: new Date(Date.now() - 100000).toLocaleString('ru-RU'),
+                    isDev: true
+                }, {
+                    id: Date.now() - 50000,
+                    title: '🌌 Красота космоса',
+                    content: 'Космос всегда манил человечество своей бесконечностью и загадочностью.\n\n!image:(cosmos)\n\nЗвёзды, планеты, галактики — всё это часть нашей огромной вселенной. Каждый раз, глядя на ночное небо, мы чувствуем себя частью чего-то большего.',
+                    author: 'Администратор',
+                    date: new Date(Date.now() - 50000).toLocaleString('ru-RU'),
+                    isDev: true
+                }, {
+                    id: Date.now() - 30000,
+                    title: '🌟 Звёздное небо над городом',
+                    content: 'Ночью, когда город затихает, можно увидеть невероятную красоту.\n\n!image:(stars-city)\n\nМиллиарды звёзд сияют над нами. Это напоминает нам о том, как малы мы в этой вселенной.',
+                    author: 'Администратор',
+                    date: new Date(Date.now() - 30000).toLocaleString('ru-RU'),
+                    isDev: true
+                }];
+                renderPosts();
+                return false;
+            }
+        }
+
         function renderPosts() {
-            const grid = document.getElementById('blogGrid');
-            
-            if (posts.length === 0) {
+            const grid = document.getElementById('postsGrid');
+            if (!grid) return;
+
+            if (!posts || posts.length === 0) {
                 grid.innerHTML = `
-                    <div style="grid-column: 1/-1;">
-                        <div class="empty-state">
-                            <div class="icon">🌌</div>
-                            <h2>Пока нет постов</h2>
-                            <p>Нажмите «Создать пост» и станьте первым автором</p>
-                        </div>
+                    <div class="empty-posts">
+                        <p>📭 Пока нет постов</p>
                     </div>
                 `;
                 return;
             }
 
-            grid.innerHTML = posts.map((post, index) => `
-                <div class="blog-card">
-                    <div class="date">${post.date}</div>
-                    <h3>${post.title}</h3>
-                    <div class="excerpt">${post.content.length > 120 ? post.content.slice(0, 120) + '...' : post.content}</div>
-                    <div class="tags">
-                        ${post.tags.map(tag => `<span class="tag">#${tag.trim()}</span>`).join('')}
+            grid.innerHTML = posts.map(post => {
+                const firstImage = getFirstImage(post.content);
+                const plainText = getPlainText(post.content);
+                const previewText = plainText.substring(0, 150) + (plainText.length > 150 ? '...' : '');
+
+                return `
+                    <div class="post-card" onclick="openPost(${post.id})">
+                        <div class="post-meta">
+                            <span class="post-author">${post.author || 'Аноним'} ${post.isDev ? '<span class="dev-badge">DEV</span>' : ''}</span>
+                            <span class="post-date">${post.date || 'Дата не указана'}</span>
+                        </div>
+                        ${firstImage ? `
+                            <div class="post-image-wrapper">
+                                <img src="${firstImage}" alt="${post.title}" loading="lazy" onerror="this.parentElement.style.display='none'">
+                            </div>
+                        ` : `
+                            <div class="post-image-placeholder">🌠</div>
+                        `}
+                        <h3>${post.title || 'Без заголовка'}</h3>
+                        <div class="post-content-preview">${previewText || 'Нет содержимого'}</div>
+                        <div class="read-more">📖 Читать полностью →</div>
                     </div>
-                    <div class="author">
-                        <div class="avatar">${post.author.charAt(0).toUpperCase()}</div>
-                        <span class="author-name">${post.author}</span>
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
-        // Добавляем пост
-        function addPost(title, content, tags, author) {
-            const now = new Date();
-            const date = now.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
-            
-            posts.unshift({
-                id: Date.now(),
-                title: title.trim(),
-                content: content.trim(),
-                tags: tags.split(',').map(t => t.trim()).filter(t => t),
-                author: author.trim() || 'Космический странник',
-                date: date,
-                createdAt: now.toISOString()
-            });
-            
-            savePosts();
-            renderPosts();
-        }
+        // ============ МОДАЛЬНОЕ ОКНО ============
+        function openPost(id) {
+            const post = posts.find(p => p.id === id);
+            if (!post) return;
 
-        // ===== МОДАЛКА =====
-        const modal = document.getElementById('modalOverlay');
-        const openBtn = document.getElementById('openModalBtn');
-        const closeBtn = document.getElementById('closeModalBtn');
-        const form = document.getElementById('postForm');
+            const modal = document.getElementById('postModal');
+            document.getElementById('modalAuthor').textContent = post.author || 'Аноним';
+            document.getElementById('modalDate').textContent = post.date || 'Дата не указана';
+            document.getElementById('modalTitle').textContent = post.title || 'Без заголовка';
 
-        openBtn.addEventListener('click', (e) => {
-            e.preventDefault();
+            // Обрабатываем контент с картинками (для модалки)
+            const parsedContent = parseContent(post.content || 'Нет содержимого', true);
+            document.getElementById('modalContent').innerHTML = parsedContent;
+
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
-        });
+        }
 
-        closeBtn.addEventListener('click', () => {
-            modal.classList.remove('active');
+        function closeModal() {
+            document.getElementById('postModal').classList.remove('active');
             document.body.style.overflow = '';
-            form.reset();
-        });
+        }
 
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.classList.remove('active');
-                document.body.style.overflow = '';
-                form.reset();
+        // Закрытие по клику вне контента
+        document.getElementById('postModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
             }
         });
 
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const title = document.getElementById('postTitle').value;
-            const content = document.getElementById('postContent').value;
-            const tags = document.getElementById('postTags').value || 'космос';
-            const author = document.getElementById('postAuthor').value;
-
-            if (!title.trim() || !content.trim()) {
-                alert('Заполните заголовок и текст поста');
-                return;
+        // Закрытие по ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
             }
-
-            addPost(title, content, tags, author);
-            modal.classList.remove('active');
-            document.body.style.overflow = '';
-            form.reset();
         });
 
-        // ===== ЗАГРУЗКА =====
-        renderPosts();
+        document.getElementById('closeModal').addEventListener('click', closeModal);
 
-        console.log('🌌 Космический блог загружен');
-        console.log(`📝 Постов: ${posts.length}`);
+        // ============ ЗАПУСК ============
+        async function init() {
+            await loadPosts();
+
+            // Автообновление каждые 30 секунд
+            setInterval(async () => {
+                await loadPosts();
+            }, 30000);
+        }
+
+        init();
+
+        console.log('🚀 Космический блог запущен!');
+        console.log('📝 Используйте тег !image:(имя_фото) для вставки картинок');
+        console.log('📁 Картинки должны лежать в папке images/');
     </script>
-
 </body>
 </html>
